@@ -1,0 +1,179 @@
+from tkinter import *
+import time
+
+dead = 0
+speed = 0.002
+stage = 0
+
+
+class Wall:
+    def __init__(self, canvas):
+        self.canvas = canvas
+        self.id = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.id[10] = self.canvas.create_rectangle(0, 200, 100, 310, fill="blue")
+        self.id[0] = self.canvas.create_rectangle(0, 0, 2000, 200, fill="black")
+        self.id[1] = self.canvas.create_rectangle(0, 310, 180, 1100, fill="black")
+        self.id[2] = self.canvas.create_rectangle(0, 450, 1200, 600, fill="black")
+        self.id[3] = self.canvas.create_rectangle(290, 200, 970, 380, fill="black")
+        self.id[4] = self.canvas.create_rectangle(1070, 260, 1710, 450, fill="black")
+        self.id[5] = self.canvas.create_rectangle(1770, 0, 2000, 1200, fill="black")
+        self.id[6] = self.canvas.create_rectangle(1300, 510, 2000, 1200, fill="black")
+        self.id[7] = self.canvas.create_rectangle(310, 850, 2000, 1200, fill="black")
+        self.id[8] = self.canvas.create_rectangle(650, 450, 1200, 765, fill="black")
+        self.id[9] = self.canvas.create_rectangle(300, 720, 550, 1080, fill="black")
+        self.idText1 = self.canvas.create_text(1600, 800, text="ΚΑΝΕ ΤΟ!", fill="white",
+                                               font=('Helvetica', 20))
+        self.idText2 = self.canvas.create_text(930, 600, text="ΛΑΒΥΡΙΝΘΟΣ ΜΕ ΜΙΝΩΤΑΥΡΟ", fill="white",
+                                               font=('Helvetica', 20))
+
+class Wall1:
+    def __init__(self, canvas):
+        self.canvas = canvas
+        self.id = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.id[10] = self.canvas.create_rectangle(1220, 0, 130, 100, fill="blue")
+        self.id[0] = self.canvas.create_rectangle(0, 0, 660, 310, fill="black")
+        self.id[1] = self.canvas.create_rectangle(0, 0, 200, 1080, fill="black")
+        self.id[2] = self.canvas.create_rectangle(0, 780, 980, 1080, fill="black")
+        self.id[3] = self.canvas.create_rectangle(0, 945, 1920, 1080, fill="black")
+        self.id[4] = self.canvas.create_rectangle(1795, 0, 1920, 1080, fill="black")
+        self.id[5] = self.canvas.create_rectangle(1370, 0, 1920, 350, fill="black")
+        self.id[6] = self.canvas.create_rectangle(765, 0, 1225, 675, fill="black")
+        self.id[7] = self.canvas.create_rectangle(300, 370, 1200, 675, fill="black")
+        self.id[8] = self.canvas.create_rectangle(1100, 480, 1695, 830, fill="black")
+        self.id[9] = self.canvas.create_rectangle(0, 0, 0, 0, fill="black")
+        self.idText1 = self.canvas.create_text(1600, 800, text="ΚΑΝΕ ΤΟ!", fill="white",
+                                               font=('Helvetica', 20))
+        self.idText2 = self.canvas.create_text(930, 600, text="ΛΑΒΥΡΙΝΘΟΣ ΜΕ ΜΙΝΩΤΑΥΡΟ", fill="white",
+                                               font=('Helvetica', 20))
+
+class Player:
+    def __init__(self, canvas, x1, y1, x2, y2):
+        self.canvas = canvas  # 1300, 30, 1310, 40    230, 1040, 240, 1050
+        self.id = self.canvas.create_rectangle(x1, y1, x2, y2, fill="red")
+        self.canvas.bind_all('<KeyPress-Right>', self.turn_right)
+        self.canvas.bind_all('<KeyPress-Left>', self.turn_left)
+        self.canvas.bind_all('<KeyPress-Up>', self.turn_up)
+        self.canvas.bind_all('<KeyPress-Down>', self.turn_down)
+        self.x = 0
+        self.y = 0
+        self.hereYouYet = True
+
+    def colision(self, x):
+        global dead, speed, stage
+        if x == 10:
+            canvas.itemconfig(wall.idText1, text="ΤΕΛΙΚΟΣ")
+            canvas.pack()
+            tk.update()
+            time.sleep(1)
+            self.hereYouYet = False
+            speed = speed - 0.00018
+            stage = stage + 1
+        else:
+            self.x = self.y = 0
+            time.sleep(1)
+            self.hereYouYet = False
+            dead = dead + 1
+
+    def draw(self):
+        self.canvas.move(self.id, self.x, self.y)
+        self.pP = self.canvas.coords(self.id)
+        global dead, speed, stage
+        for x in range(0, 11):
+            pW = self.canvas.coords(wall.id[x])
+            # RIGHT-LEFT HIT
+            if pW[2] == self.pP[0] and (pW[1] < self.pP[3] and pW[3] > self.pP[1]):
+                self.colision(x)
+            if pW[0] == self.pP[2] and (pW[1] < self.pP[3] and pW[3] > self.pP[1]):
+                self.colision(x)
+            # TOP-BOTTOM HIT
+            if pW[1] == self.pP[3] and (pW[0] < self.pP[2] and pW[2] > self.pP[0]):
+                self.colision(x)
+            if pW[3] == self.pP[1] and (pW[0] < self.pP[2] and pW[2] > self.pP[0]):
+                self.colision(x)
+
+    def turn_right(self, evt):
+        self.x = 1
+        self.y = 0
+
+    def turn_left(self, evt):
+        self.x = -1
+        self.y = 0
+
+    def turn_up(self, evt):
+        self.y = -1
+        self.x = 0
+
+    def turn_down(self, evt):
+        self.y = 1
+        self.x = 0
+
+
+tk = Tk()
+tk.resizable(0, 0)
+canvas = Canvas(tk, width=1920, height=1080)
+canvas.pack()
+tk.update()
+
+wall = Wall1(canvas)
+player = Player(canvas, 1290, 0, 1300, 10)
+
+while 1:
+    if player.hereYouYet:
+        tk.update()
+        player.draw()
+        time.sleep(speed)
+    else:
+        del player
+        hereYouYet = True
+        time.sleep(1)
+        player = Player(canvas, 1300, 30, 1310, 40)
+        if stage >= 8:
+            if stage == 8:
+                canvas.itemconfig(wall.idText1, text="ΚΑΨΕ ΤΕΛΟΣ | %s" % dead)
+                canvas.itemconfig(wall.idText2, text="ΔΕΝ ΘΑ ΠΕΡΑΣΕΤΕ ΑΛΛΟ")
+            else:
+                canvas.itemconfig(wall.idText1, text="ΑΥΤΟ ΕΙΝΑΙ ΤΟ ΤΕΛΟΣ")
+                canvas.itemconfig(wall.idText2, text="ΤΑ ΚΑΤΑΦΕΡΕΣ")
+                del player
+                del wall
+                time.sleep(1)
+                canvas.create_rectangle(0, 0, 2000, 2000, fill="white")
+                break
+        else:
+            canvas.itemconfig(wall.idText1, text="ΘΑΝΑΤΟΣ %s" % dead)
+            canvas.itemconfig(wall.idText2, text="ΕΠΙΠΕΔΟ %s" % stage)
+        tk.update()
+        player.x = 0
+        player.y = 0
+
+wall = Wall(canvas)
+player = Player(canvas, 230, 1040, 240, 1050)
+
+dead = 0
+speed = 0.002
+stage = 0
+
+while 2:
+    if player.hereYouYet:
+        tk.update()
+        player.draw()
+        time.sleep(speed)
+    else:
+        del player
+        hereYouYet = True
+        time.sleep(1)
+        player = Player(canvas, 230, 1040, 240, 1050)
+        if stage >= 8:
+            if stage == 8:
+                canvas.itemconfig(wall.idText1, text="ΚΑΨΕ ΤΕΛΟΣ | %s" % dead)
+                canvas.itemconfig(wall.idText2, text="ΔΕΝ ΘΑ ΠΕΡΑΣΕΤΕ ΑΛΛΟ")
+            else:
+                canvas.itemconfig(wall.idText1, text="ΑΥΤΟ ΕΙΝΑΙ ΤΟ ΤΕΛΟΣ")
+                canvas.itemconfig(wall.idText2, text="ΤΑ ΚΑΤΑΦΕΡΕΣ")
+                time.sleep(600)
+        else:
+            canvas.itemconfig(wall.idText1, text="ΘΑΝΑΤΟΣ %s" % dead)
+            canvas.itemconfig(wall.idText2, text="ΕΠΙΠΕΔΟ %s" % stage)
+        tk.update()
+        player.x = 0
+        player.y = 0
